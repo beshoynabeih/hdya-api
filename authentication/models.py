@@ -10,8 +10,8 @@ class User(AbstractUser):
     avatar = models.ImageField(null=True, upload_to='static/user/images/')
     address = models.CharField(max_length=200, null=True)
     birth_date = models.DateField(null=True, blank=True)
-    username = models.CharField(max_length=10, null=True, blank=True)
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
     USERNAME_FIELD = 'email'
 
     def get_username(self):

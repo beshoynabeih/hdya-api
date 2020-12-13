@@ -43,13 +43,13 @@ class ProductSerializer(serializers.ModelSerializer):
 
     occassions = serializers.SlugRelatedField(
         many=True,
-        read_only=True,
-        slug_field='name'
+        slug_field='name',
+        queryset=Occassion.objects.all()
     )
     relationships = serializers.SlugRelatedField(
         many=True,
-        read_only=True,
-        slug_field='name'
+        slug_field='name',
+        queryset=RelationShip.objects.all(),
     )
 
     # occassion_id = serializers.PrimaryKeyRelatedField(queryset=Occassion.objects.all())
