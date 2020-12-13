@@ -1,0 +1,6 @@
+upload product images
+save user loggedin
+edit product by owner
+
+reports
+
