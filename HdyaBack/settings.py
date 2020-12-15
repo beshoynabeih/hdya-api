@@ -31,7 +31,6 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'authentication.apps.AuthenticationConfig',
-    'home.apps.HomeConfig',
     'product.apps.ProductConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -41,7 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'djoser',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    # https://github.com/adamchainz/django-cors-headers#configuration
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
@@ -52,9 +53,16 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+
 ]
 
 ROOT_URLCONF = 'HdyaBack.urls'
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:4200",
+]
 
 TEMPLATES = [
     {
@@ -138,7 +146,7 @@ REST_FRAMEWORK = {
         # 'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.IsAuthenticated',
     ),
 
 }
@@ -154,6 +162,7 @@ DJOSER = {
     'SERIALIZERS': {
         'user_create': 'authentication.serializers.UserCreateSerializer',
         'user': 'authentication.serializers.UserCreateSerializer',
+        'current_user': 'authentication.serializers.UserCreateSerializer',
     },
 
 }
