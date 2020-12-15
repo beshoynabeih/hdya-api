@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import viewsets, generics
 from .serializers import * #ProductSerializer, OccassionSerializer , ProductPictureSerializer
 from .models import *
-
+from .permissions import ProductOwner
 
 # Create your views here.
 
@@ -32,3 +32,9 @@ class RelationShipViewSet(viewsets.ModelViewSet):
     queryset = RelationShip.objects.all()
     serializer_class = RelationShipSerializer
 
+    permission_classes = [ProductOwner]
+
+    
+# class OccassionViewSet(viewsets.ModelViewSet):
+#     queryset = Occassion.objects.all()
+#     serializer_class = OccassionSerializer

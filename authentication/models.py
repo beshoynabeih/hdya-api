@@ -11,7 +11,13 @@ class User(AbstractUser):
     address = models.CharField(max_length=200, null=True)
     birth_date = models.DateField(null=True, blank=True)
 
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+    REQUIRED_FIELDS = ['username',
+                       'first_name',
+                       'last_name',
+                       'mobile',
+                       'address',
+                       'avatar',
+                       'birth_date']
     USERNAME_FIELD = 'email'
 
     def get_username(self):
