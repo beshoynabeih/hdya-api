@@ -3,12 +3,6 @@ from rest_framework import serializers
 from django.utils import timezone
 
 
-# class ProfileSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Profile
-#         fields = '__all__'
-
-
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
@@ -29,10 +23,6 @@ class RelationShipSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# class ProductOccassionSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = ProductOccassion
-#         fields = '__all__'
 
 class ProductPictureSerializer(serializers.ModelSerializer):
     class Meta:
@@ -56,10 +46,6 @@ class ProductSerializer(serializers.ModelSerializer):
         slug_field='name',
         queryset=RelationShip.objects.all(),
     )
-
-    # prd_imgs = ProductPictureSerializer()
-    # prd_imgs.product = serializers.IntegerField(default=1) 
-    # prd_imgs.img_url = serializers.ImageField() 
 
     class Meta:
         model = Product
