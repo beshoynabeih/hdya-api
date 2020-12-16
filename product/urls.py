@@ -4,7 +4,10 @@ from . import views
 
 router = routers.DefaultRouter()
 router.register(r'products', views.ProductViewSet, basename='products')
-# router.register(r'occassions', views.OccassionViewSet , basename = 'occassion')
+router.register(r'product_imgs', views.ProductPictureViewSet, basename='productImgs')
+router.register(r'occassions', views.OccassionViewSet , basename = 'occassion')
+router.register(r'RelationShips', views.RelationShipViewSet , basename = 'RelationShips')
+router.register(r'categories', views.CategoryViewSet , basename = 'categories')
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.

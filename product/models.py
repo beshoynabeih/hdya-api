@@ -62,7 +62,7 @@ class ProductPicture(models.Model):
     img_url = models.ImageField(upload_to='static/products/images/', verbose_name='Images')
 
     def __str__(self):
-        return self.product_id.name
+        return self.product.name
 
 
 class Review(models.Model):
