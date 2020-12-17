@@ -58,7 +58,7 @@ class Product(models.Model):
 
 
 class ProductPicture(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     img_url = models.ImageField(upload_to='static/products/images/', verbose_name='Images')
 
     def __str__(self):

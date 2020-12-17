@@ -3,57 +3,69 @@ from rest_framework import serializers
 from django.utils import timezone
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class CategorySerializer(serializers.HyperlinkedModelSerializer):
+
     class Meta:
         model = Category
-        fields = '__all__'
+        fields = ('url', 'id', 'title', 'description')
+        extra_kwargs = {
+            'url': {'view_name': 'categories-detail'}
+        }
 
 
-class OccassionSerializer(serializers.ModelSerializer):
-    # product_id = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+class OccassionSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Occassion
-        fields = '__all__'
-    
+        fields = ('url', 'id', 'name', 'description')
+        extra_kwargs = {
+            'url': {'view_name': 'occassions-detail'}
+        }
 
-class RelationShipSerializer(serializers.ModelSerializer):
+
+class RelationShipSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = RelationShip
-        fields = '__all__'
+        fields = ('url', 'id', 'name', 'description')
+        extra_kwargs = {
+            'url': {'view_name': 'relationships-detail'}
+        }
 
 
-
-class ProductPictureSerializer(serializers.ModelSerializer):
+class ProductPictureSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ProductPicture
-        fields = '__all__'
-        # read_only_fields = ('product',)
-        
+        fields = ('url', 'id', 'img_url')
+        extra_kwargs = {
+            'url': {'view_name': 'product_images-detail'}
+        }
+
 
 class ProductSerializer(serializers.ModelSerializer):
-    category_name = serializers.CharField(source="category_id.title", read_only=True)
-    user_name = serializers.CharField(source="user_id.user.username", read_only=True)
-    # occassions_name = serializers.CharField(source ='occassions')
-
-    occassions = serializers.SlugRelatedField(
-        many=True,
-        slug_field='name',
-        queryset=Occassion.objects.all()
-    )
-    relationships = serializers.SlugRelatedField(
-        many=True,
-        slug_field='name',
-        queryset=RelationShip.objects.all(),
-    )
+    # user_name = serializers.CharField(source="user_id.user.username", read_only=True)
+    category = serializers.HyperlinkedIdentityField(view_name='categories-detail')
+    occassions = serializers.HyperlinkedIdentityField(many=True, view_name='occassions-detail')
+    relationships = serializers.HyperlinkedIdentityField(many=True, view_name='relationships-detail')
+    # user = serializers.CharField(
+    #     default=serializers.CurrentUserDefault()
+    # )
 
     class Meta:
         model = Product
-        fields = '__all__'
-        read_only_fields = ('is_featured',)
-
-
-
+        fields = ('id',
+                  'user',
+                  'category',
+                  'occassions',
+                  'relationships',
+                  'name',
+                  'details',
+                  'price',
+                  'age_from',
+                  'age_to',
+                  'gender',
+                  'is_featured',
+                  'created_at')
+        read_only_fields = ('is_featured', 'user')
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -78,3 +90,4 @@ class ReviewReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReviewReport
         fields = '__all__'
+
