@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'djoser',
     'rest_framework.authtoken',
-    # https://github.com/adamchainz/django-cors-headers#configuration
     'corsheaders',
     'django_filters'
     
@@ -62,6 +61,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'HdyaBack.urls'
 
+# https://github.com/adamchainz/django-cors-headers#configuration
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
 ]
@@ -121,7 +121,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Cairo'
 
 USE_I18N = True
 
@@ -172,8 +172,3 @@ DJOSER = {
     },
 
 }
-
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:4200"
-]

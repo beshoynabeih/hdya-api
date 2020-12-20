@@ -15,9 +15,6 @@ class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
 
 
-        
-
-
 class ProductViewSet(viewsets.ModelViewSet):
     __basic_fields = ('name', 'price', 'gender','age_from'  ,'age_to' ,'category' , 'user' , 'occassions' , 'is_featured', 'relationships' )
     queryset = Product.objects.all()
@@ -25,7 +22,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend, SearchFilter, OrderingFilter)
     filter_fields = __basic_fields
     search_fields = __basic_fields
-
+    permission_classes = [ProductOwner]
 
 
 class ProductPictureViewSet(viewsets.ModelViewSet):

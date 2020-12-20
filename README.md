@@ -9,7 +9,7 @@
   $ pip install -r requirments.txt
 ```
 
-  Setup database credentials in settings.py
+  Setup database credentials in .env file and make sure to source this file first
 
 ```bash
   $ python manage.py makemigrations
