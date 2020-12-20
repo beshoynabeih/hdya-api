@@ -6,4 +6,5 @@ router = routers.DefaultRouter()
 # router.register(r'users', views.UserViewSet, basename='users')
 urlpatterns = [
     path('', include(router.urls)),
+    path('password/reset/', views.password_reset_page ),
 ]

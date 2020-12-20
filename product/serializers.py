@@ -3,52 +3,46 @@ from rest_framework import serializers
 from django.utils import timezone
 
 
-class CategorySerializer(serializers.HyperlinkedModelSerializer):
-
+class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ('url', 'id', 'title', 'description')
-        extra_kwargs = {
-            'url': {'view_name': 'categories-detail'}
-        }
+        fields = ('id', 'title', 'description')
 
 
-class OccassionSerializer(serializers.HyperlinkedModelSerializer):
-
+class OccassionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Occassion
-        fields = ('url', 'id', 'name', 'description')
-        extra_kwargs = {
-            'url': {'view_name': 'occassions-detail'}
-        }
+        fields = ('id', 'name', 'description')
 
 
-class RelationShipSerializer(serializers.HyperlinkedModelSerializer):
+class RelationShipSerializer(serializers.ModelSerializer):
     class Meta:
         model = RelationShip
-        fields = ('url', 'id', 'name', 'description')
-        extra_kwargs = {
-            'url': {'view_name': 'relationships-detail'}
-        }
+        fields = ('id', 'name', 'description')
 
 
-class ProductPictureSerializer(serializers.HyperlinkedModelSerializer):
+class ProductPictureSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductPicture
-        fields = ('url', 'id', 'img_url')
-        extra_kwargs = {
-            'url': {'view_name': 'product_images-detail'}
-        }
+        fields = ('id', 'image', 'product')
+
+
+class TestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Test
+        fields = '__all__'
 
 
 class ProductSerializer(serializers.ModelSerializer):
     # user_name = serializers.CharField(source="user_id.user.username", read_only=True)
-    category = serializers.HyperlinkedIdentityField(view_name='categories-detail')
-    occassions = serializers.HyperlinkedIdentityField(many=True, view_name='occassions-detail')
-    relationships = serializers.HyperlinkedIdentityField(many=True, view_name='relationships-detail')
-    # user = serializers.CharField(
-    #     default=serializers.CurrentUserDefault()
-    # )
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
+    occassions = serializers.PrimaryKeyRelatedField(many=True, queryset=Occassion.objects.all())
+    relationships = serializers.PrimaryKeyRelatedField(many=True, queryset=RelationShip.objects.all())
+    productpicture_set = ProductPictureSerializer(many=True, required=False)
+    user = serializers.CharField(
+        default=serializers.CurrentUserDefault()
+    )
+    # test_set = TestSerializer(many=True)
 
     class Meta:
         model = Product
@@ -64,8 +58,19 @@ class ProductSerializer(serializers.ModelSerializer):
                   'age_to',
                   'gender',
                   'is_featured',
-                  'created_at')
+                  'created_at',
+                  'productpicture_set',)
         read_only_fields = ('is_featured', 'user')
+
+    def create(self, validated_data):
+        print(validated_data)
+        tests = validated_data.pop('productpicture_set')
+        product = super(ProductSerializer, self).create(validated_data)
+        for test in tests:
+            print(type(test))
+            # Test.objects.create(product=product, **test)
+            ProductPicture.objects.create(product=product, image='')
+        return product
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -90,4 +95,3 @@ class ReviewReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReviewReport
         fields = '__all__'
-

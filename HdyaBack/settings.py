@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'django_filters'
-    
+
 ]
 
 MIDDLEWARE = [
@@ -152,23 +152,29 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
-        )
-
+    )
 
 }
 AUTH_USER_MODEL = 'authentication.User'
 DJOSER = {
     'LOGIN_FIELD': 'email',
     'USER_CREATE_PASSWORD_RETYPE': True,
-    # 'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
-    # 'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
-    # 'ACTIVATION_URL': '#/activate/{uid}/{token}',
-    # 'SEND_ACTIVATION_EMAIL': True,
-    # 'SEND_CONFIRMATION_EMAIL': True,
+    'PASSWORD_RESET_CONFIRM_RETYPE': True,
+    'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND': True,
+    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/?uid={uid}&token={token}',
+    'ACTIVATION_URL': '#/activate/{uid}/{token}',
     'SERIALIZERS': {
         'user_create': 'authentication.serializers.UserCreateSerializer',
         'user': 'authentication.serializers.UserCreateSerializer',
-        'current_user': 'authentication.serializers.UserCreateSerializer',
+        # 'current_user': 'authentication.serializers.UserCreateSerializer',
     },
 
 }
+# mail confs
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
