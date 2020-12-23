@@ -53,16 +53,24 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        ordering = ('id', )
+
     def __str__(self):
         return self.name
 
 
 class ProductPicture(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    img_url = models.ImageField(upload_to='static/products/images/', verbose_name='Images')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True)
+    image = models.ImageField(upload_to='static/products/images/', verbose_name='Image', null=True, blank=True)
 
     def __str__(self):
         return self.product.name
+
+
+class Test(models.Model):
+    name = models.CharField(max_length=10, blank=True)
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, null=True)
 
 
 class Review(models.Model):
