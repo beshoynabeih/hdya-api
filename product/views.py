@@ -62,6 +62,24 @@ class RelationShipViewSet(viewsets.ModelViewSet):
 #     serializer_class = OccassionSerializer
 
 
+class ProductImageCreate(views.APIView):
+    permission_classes = [ProductOwner]
+    def post(self, request):
+        if request.POST.get('product'):
+            try:
+                product = Product.objects.get(pk=request.POST.get('product'))
+            except:
+                raise Http404
+
+            self.check_object_permissions(request, product)
+            serializer = ProductPictureSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        raise Http404
+
+
 class ProductImageDetail(views.APIView):
 
     permission_classes = [ProductImageOwner, ]
@@ -85,4 +103,8 @@ class ProductImageDetail(views.APIView):
             os.remove(path)
         image.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+
 

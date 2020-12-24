@@ -16,5 +16,6 @@ router.register(r'categories', views.CategoryViewSet, basename='categories')
 urlpatterns = [
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('product_image/<int:pk>/', views.ProductImageDetail.as_view(), name='product_image-detail')
+    path('product_image/<int:pk>/', views.ProductImageDetail.as_view(), name='product_image-detail'),
+    path('product_image/', views.ProductImageCreate.as_view(), name='product_image-create')
 ]
