@@ -8,6 +8,10 @@ router.register(r'product_imgs', views.ProductPictureViewSet, basename='product_
 router.register(r'occassions', views.OccassionViewSet, basename='occassions')
 router.register(r'RelationShips', views.RelationShipViewSet, basename='relationships')
 router.register(r'categories', views.CategoryViewSet, basename='categories')
+router.register(r'reviews', views.ReviewViewSet, basename='reviews')
+router.register(r'rate', views.RateViewSet, basename='rate')
+router.register(r'productreports', views.ProductReportViewSet, basename='productreports')
+router.register(r'reviewreport', views.ReviewReportViewSet, basename='reviewreport')
 # router.register(r'test', views.TestViewSet, basename='test')
 
 

@@ -28,6 +28,7 @@ class ProductViewSet(viewsets.ModelViewSet):
                       'user',
                       'occassions',
                       'is_featured')
+
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     filter_backends = (filters.DjangoFilterBackend, SearchFilter, OrderingFilter)
@@ -41,9 +42,9 @@ class ProductPictureViewSet(viewsets.ModelViewSet):
     serializer_class = ProductPictureSerializer
 
 
-class TestViewSet(viewsets.ModelViewSet):
-    queryset = Test.objects.all()
-    serializer_class = TestSerializer
+# class TestViewSet(viewsets.ModelViewSet):
+#     queryset = Test.objects.all()
+#     serializer_class = TestSerializer
 
 
 class OccassionViewSet(viewsets.ModelViewSet):
@@ -86,3 +87,19 @@ class ProductImageDetail(views.APIView):
         image.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+
+
+class RateViewSet(viewsets.ModelViewSet):
+    queryset = Rate.objects.all()
+    serializer_class = RateSerializer
+
+class ProductReportViewSet(viewsets.ModelViewSet):
+    queryset = ProductReport.objects.all()
+    serializer_class = ProductReportSerializer
+
+class ReviewReportViewSet(viewsets.ModelViewSet):
+    queryset = ReviewReport.objects.all()
+    serializer_class = ReviewReportSerializer
