@@ -1,5 +1,5 @@
 from .models import *  # Product , Category , Occassion , RelationShip
-from rest_framework import serializers,status
+from rest_framework import serializers, status
 from rest_framework.response import Response
 from django.utils import timezone
 
@@ -26,12 +26,6 @@ class ProductPictureSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductPicture
         fields = ('id', 'image', 'product')
-
-
-class TestSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Test
-        fields = '__all__'
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -76,12 +70,6 @@ class ProductSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
-        fields = '__all__'
-
-
-class RateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Rate
         fields = '__all__'
 
 

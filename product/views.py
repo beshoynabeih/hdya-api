@@ -114,11 +114,6 @@ class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
 
 
-class RateViewSet(viewsets.ModelViewSet):
-    queryset = Rate.objects.all()
-    serializer_class = RateSerializer
-
-
 class ProductReportViewSet(viewsets.ModelViewSet):
     queryset = ProductReport.objects.all()
     serializer_class = ProductReportSerializer

@@ -20,4 +20,4 @@ admin.site.register(RelationShip)
 admin.site.register(Occassion)
 admin.site.register(Category)
 admin.site.register(Product, ProductAdmin)
-admin.site.register(Test)
+
