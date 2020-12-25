@@ -1,5 +1,6 @@
 from .models import *  # Product , Category , Occassion , RelationShip
-from rest_framework import serializers
+from rest_framework import serializers,status
+from rest_framework.response import Response
 from django.utils import timezone
 
 
@@ -34,43 +35,42 @@ class TestSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    # user_name = serializers.CharField(source="user_id.user.username", read_only=True)
     category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
-    occassions = serializers.PrimaryKeyRelatedField(many=True, queryset=Occassion.objects.all())
-    relationships = serializers.PrimaryKeyRelatedField(many=True, queryset=RelationShip.objects.all())
+    occassions = serializers.PrimaryKeyRelatedField(many=True, queryset=Occassion.objects.all(), required=False)
+    relationships = serializers.PrimaryKeyRelatedField(many=True, queryset=RelationShip.objects.all(), required=False)
     productpicture_set = ProductPictureSerializer(many=True, required=False)
-    user = serializers.CharField(
-        default=serializers.CurrentUserDefault()
-    )
-    # test_set = TestSerializer(many=True)
 
     class Meta:
         model = Product
         fields = ('id',
-                  'user',
-                  'category',
-                  'occassions',
-                  'relationships',
                   'name',
                   'details',
+                  'category',
                   'price',
                   'age_from',
                   'age_to',
                   'gender',
                   'is_featured',
+                  'user',
+                  'occassions',
+                  'relationships',
+                  'productpicture_set',
                   'created_at',
-                  'productpicture_set',)
-        read_only_fields = ('is_featured', 'user')
+                  'updated_at',
+                  )
+        read_only_fields = ('is_featured', 'created_at', 'updated_at', 'user')
 
-    def create(self, validated_data):
-        print(validated_data)
-        tests = validated_data.pop('productpicture_set')
-        product = super(ProductSerializer, self).create(validated_data)
-        for test in tests:
-            print(type(test))
-            # Test.objects.create(product=product, **test)
-            ProductPicture.objects.create(product=product, image='')
-        return product
+    def validate(self, attrs):
+        attrs['user'] = self.context['request'].user
+        return attrs
+
+    # def create(self, validated_data):
+    #     print(validated_data)
+    #     image = validated_data.pop('image')
+    #     print(validated_data)
+    #     product = super(ProductSerializer, self).create(validated_data)
+    #     ProductPicture.objects.create(product=product, image=image)
+    #     return product
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -95,3 +95,4 @@ class ReviewReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReviewReport
         fields = '__all__'
+

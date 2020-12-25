@@ -10,6 +10,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.http import Http404
 import os
+
+
 # Create your views here.
 
 
@@ -28,6 +30,7 @@ class ProductViewSet(viewsets.ModelViewSet):
                       'user',
                       'occassions',
                       'is_featured')
+
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     filter_backends = (filters.DjangoFilterBackend, SearchFilter, OrderingFilter)
@@ -41,9 +44,9 @@ class ProductPictureViewSet(viewsets.ModelViewSet):
     serializer_class = ProductPictureSerializer
 
 
-class TestViewSet(viewsets.ModelViewSet):
-    queryset = Test.objects.all()
-    serializer_class = TestSerializer
+# class TestViewSet(viewsets.ModelViewSet):
+#     queryset = Test.objects.all()
+#     serializer_class = TestSerializer
 
 
 class OccassionViewSet(viewsets.ModelViewSet):
@@ -57,6 +60,7 @@ class RelationShipViewSet(viewsets.ModelViewSet):
 
     permission_classes = [ProductOwner]
 
+
 # class OccassionViewSet(viewsets.ModelViewSet):
 #     queryset = Occassion.objects.all()
 #     serializer_class = OccassionSerializer
@@ -64,6 +68,7 @@ class RelationShipViewSet(viewsets.ModelViewSet):
 
 class ProductImageCreate(views.APIView):
     permission_classes = [ProductOwner]
+
     def post(self, request):
         if request.POST.get('product'):
             try:
@@ -81,7 +86,6 @@ class ProductImageCreate(views.APIView):
 
 
 class ProductImageDetail(views.APIView):
-
     permission_classes = [ProductImageOwner, ]
 
     def get_object(self, pk):
@@ -105,6 +109,35 @@ class ProductImageDetail(views.APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
 
 
+class RateViewSet(viewsets.ModelViewSet):
+    queryset = Rate.objects.all()
+    serializer_class = RateSerializer
 
+
+class ProductReportViewSet(viewsets.ModelViewSet):
+    queryset = ProductReport.objects.all()
+    serializer_class = ProductReportSerializer
+
+
+class ReviewReportViewSet(viewsets.ModelViewSet):
+    queryset = ReviewReport.objects.all()
+    serializer_class = ReviewReportSerializer
+
+
+class ProductCreate(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        if request.method == "POST":
+            self.check_permissions(request)
+            print(request.data)
+            product = ProductSerializer(data=request.data)
+            if product.is_valid():
+                product.save()
+                return Response(product.data, status=status.HTTP_201_CREATED)
+            return Response(product.errors)

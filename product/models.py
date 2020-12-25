@@ -34,7 +34,7 @@ class RelationShip(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=45)
     details = models.TextField(max_length=3000)
-    price = models.IntegerField()
+    price = models.FloatField()
     age_from = models.IntegerField()
     age_to = models.IntegerField()
     gender = models.CharField(
@@ -68,22 +68,10 @@ class ProductPicture(models.Model):
         return self.product.name
 
 
-class Test(models.Model):
-    name = models.CharField(max_length=10, blank=True)
-    product = models.ForeignKey('Product', on_delete=models.CASCADE, null=True)
-
-
 class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     body = models.CharField(max_length=1000)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-
-class Rate(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
     rate = models.CharField(
         null=True,
         max_length=50,
@@ -95,6 +83,7 @@ class Rate(models.Model):
             ('5', '5'),
         ])
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class ProductReport(models.Model):
@@ -109,3 +98,18 @@ class ReviewReport(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     body = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+    status = models.CharField(max_length=2, choices=[
+        ('p', 'in processing'),
+        ('s', 'shipped'),
+        ('e', 'delivered'),
+        ('r', 'returned'),
+        ('c', 'cancelled'),
+    ])
+    create_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
