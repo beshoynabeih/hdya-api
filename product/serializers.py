@@ -1,5 +1,5 @@
 from .models import *  # Product , Category , Occassion , RelationShip
-from rest_framework import serializers, status
+from rest_framework import serializers, status, validators
 from rest_framework.response import Response
 from django.utils import timezone
 
@@ -32,7 +32,7 @@ class ProductSerializer(serializers.ModelSerializer):
     category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
     occassions = serializers.PrimaryKeyRelatedField(many=True, queryset=Occassion.objects.all(), required=False)
     relationships = serializers.PrimaryKeyRelatedField(many=True, queryset=RelationShip.objects.all(), required=False)
-    productpicture_set = ProductPictureSerializer(many=True, required=False)
+    images = ProductPictureSerializer(many=True, required=False)
 
     class Meta:
         model = Product
@@ -48,23 +48,23 @@ class ProductSerializer(serializers.ModelSerializer):
                   'user',
                   'occassions',
                   'relationships',
-                  'productpicture_set',
+                  'images',
                   'created_at',
                   'updated_at',
                   )
         read_only_fields = ('is_featured', 'created_at', 'updated_at', 'user')
 
     def validate(self, attrs):
+        if attrs['age_from'] > attrs['age_to']:
+            raise serializers.ValidationError('invalid valud for age to')
         attrs['user'] = self.context['request'].user
         return attrs
 
-    # def create(self, validated_data):
-    #     print(validated_data)
-    #     image = validated_data.pop('image')
-    #     print(validated_data)
-    #     product = super(ProductSerializer, self).create(validated_data)
-    #     ProductPicture.objects.create(product=product, image=image)
-    #     return product
+    def create(self, validated_data):
+        print(validated_data)
+        product = super(ProductSerializer, self).create(validated_data)
+        # ProductPicture.objects.create(product=product, image=image)
+        return product
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -83,4 +83,3 @@ class ReviewReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReviewReport
         fields = '__all__'
-

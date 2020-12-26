@@ -19,10 +19,6 @@ class Occassion(models.Model):
         return self.name
 
 
-# class ProductOccassion(models.Model):
-#     product_id = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
-#     occassion_id = models.ForeignKey(Occassion, on_delete=models.CASCADE, null=True)
-
 class RelationShip(models.Model):
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=200, blank=True, null=True)
@@ -35,8 +31,8 @@ class Product(models.Model):
     name = models.CharField(max_length=45)
     details = models.TextField(max_length=3000)
     price = models.FloatField()
-    age_from = models.IntegerField()
-    age_to = models.IntegerField()
+    age_from = models.PositiveIntegerField()
+    age_to = models.PositiveIntegerField()
     gender = models.CharField(
         null=True,
         max_length=50,
@@ -61,8 +57,8 @@ class Product(models.Model):
 
 
 class ProductPicture(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True)
-    image = models.ImageField(upload_to='static/products/images/', verbose_name='Image', null=True, blank=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='static/products/images/', verbose_name='Image')
 
     def __str__(self):
         return self.product.name

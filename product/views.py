@@ -44,11 +44,6 @@ class ProductPictureViewSet(viewsets.ModelViewSet):
     serializer_class = ProductPictureSerializer
 
 
-# class TestViewSet(viewsets.ModelViewSet):
-#     queryset = Test.objects.all()
-#     serializer_class = TestSerializer
-
-
 class OccassionViewSet(viewsets.ModelViewSet):
     queryset = Occassion.objects.all()
     serializer_class = OccassionSerializer
@@ -61,27 +56,28 @@ class RelationShipViewSet(viewsets.ModelViewSet):
     permission_classes = [ProductOwner]
 
 
-# class OccassionViewSet(viewsets.ModelViewSet):
-#     queryset = Occassion.objects.all()
-#     serializer_class = OccassionSerializer
-
-
 class ProductImageCreate(views.APIView):
     permission_classes = [ProductOwner]
 
     def post(self, request):
+        if not request.FILES.getlist('image'):
+            return Response({"image": "this field is required"}, status=status.HTTP_400_BAD_REQUEST)
         if request.POST.get('product'):
             try:
                 product = Product.objects.get(pk=request.POST.get('product'))
             except:
                 raise Http404
-
             self.check_object_permissions(request, product)
-            serializer = ProductPictureSerializer(data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            product_images = []
+            for image in request.FILES.getlist('image'):
+                serializer = ProductPictureSerializer(data={"product": product.id, "image": image})
+                if serializer.is_valid():
+                    serializer.save()
+                    product_images.append(serializer.data)
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(product_images, status=status.HTTP_201_CREATED)
         raise Http404
 
 
