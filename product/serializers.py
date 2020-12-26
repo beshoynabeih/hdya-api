@@ -46,21 +46,23 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('id',
-                  'user',
-                  'category',
-                  'occassions',
-                  'relationships',
-                  'name',
-                  'details',
-                  'price',
-                  'age_from',
-                  'age_to',
-                  'gender',
-                  'is_featured',
-                  'created_at',
-                #   'productpicture_set',
-                  )
+        fields = '__all__'
+        
+        # fields = ('id',
+        #           'user',
+        #           'category',
+        #           'occassions',
+        #           'relationships',
+        #           'name',
+        #           'details',
+        #           'price',
+        #           'age_from',
+        #           'age_to',
+        #           'gender',
+        #           'is_featured',
+        #           'created_at',
+        #         #   'productpicture_set',
+        #           )
         read_only_fields = ('is_featured', 'user')
 
     # def create(self, validated_data):

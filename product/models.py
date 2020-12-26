@@ -52,6 +52,7 @@ class Product(models.Model):
     is_featured = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    pimage = models.ImageField(upload_to='static/products/images/')
 
     class Meta:
         ordering = ('id', )
@@ -61,7 +62,7 @@ class Product(models.Model):
 
 
 class ProductPicture(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True)
+    product = models.ForeignKey(Product,default =None , on_delete=models.CASCADE, blank=True)
     image = models.ImageField(upload_to='static/products/images/', verbose_name='Image', null=True, blank=True)
 
     def __str__(self):

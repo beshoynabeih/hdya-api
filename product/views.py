@@ -37,6 +37,10 @@ class ProductViewSet(viewsets.ModelViewSet):
     permission_classes = [ProductOwner]
 
 
+    # def recentFiveProducts(queryset):
+    # lastest_five = Product.objects.order_by('-created_at')[:5]
+
+
 class ProductPictureViewSet(viewsets.ModelViewSet):
     queryset = ProductPicture.objects.all()
     serializer_class = ProductPictureSerializer
