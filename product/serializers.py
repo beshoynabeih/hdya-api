@@ -56,7 +56,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         if attrs['age_from'] > attrs['age_to']:
-            raise serializers.ValidationError('invalid valud for age to')
+            raise serializers.ValidationError('invalid valud for age to. It mus be greather than age from')
         attrs['user'] = self.context['request'].user
         return attrs
 
@@ -68,9 +68,18 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Review
         fields = '__all__'
+        read_only_fields = ('user', 'created_at')
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = '__all__'
+        read_only_fields = ('user', 'created_at', 'updated_at')
 
 
 class ProductReportSerializer(serializers.ModelSerializer):

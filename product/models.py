@@ -50,7 +50,7 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ('id', )
+        ordering = ('created_at',)
 
     def __str__(self):
         return self.name
@@ -79,7 +79,6 @@ class Review(models.Model):
             ('5', '5'),
         ])
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
 
 class ProductReport(models.Model):
@@ -106,6 +105,9 @@ class Order(models.Model):
         ('e', 'delivered'),
         ('r', 'returned'),
         ('c', 'cancelled'),
-    ])
-    create_at = models.DateTimeField(auto_now_add=True)
+    ], default='p')
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ('-created_at',)

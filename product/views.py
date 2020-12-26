@@ -2,10 +2,9 @@ from django.shortcuts import render
 from rest_framework import viewsets, views, status
 from .serializers import *  # ProductSerializer, OccassionSerializer , ProductPictureSerializer
 from .models import *
-from .permissions import ProductOwner, ProductImageOwner
+from .permissions import ProductOwner, ProductImageOwner, SubmitReview
 from django_filters import rest_framework as filters
 from rest_framework.filters import SearchFilter, OrderingFilter
-from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.http import Http404
@@ -126,9 +125,44 @@ class ProductCreate(views.APIView):
     def post(self, request):
         if request.method == "POST":
             self.check_permissions(request)
-            print(request.data)
             product = ProductSerializer(data=request.data)
             if product.is_valid():
                 product.save()
                 return Response(product.data, status=status.HTTP_201_CREATED)
             return Response(product.errors)
+
+
+class ProductReview(views.APIView):
+    permission_classes = [SubmitReview]
+
+    def get(self, request):
+        reviews = Review.objects.filter(product=request.GET.get('product'))
+        return Response(ReviewSerializer(reviews, many=True).data)
+
+    def post(self, request):
+        review = ReviewSerializer(data=request.data)
+        if review.is_valid():
+            review.save(user=request.user)
+            return Response(review.data, status=status.HTTP_201_CREATED)
+        return Response(review.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class OrderList(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        order = Order.objects.filter(user=request.user).exclude(status='c')
+        return Response(OrderSerializer(order, many=True).data)
+
+    def post(self, request):
+        order = OrderSerializer(data=request.data)
+        if order.is_valid():
+            order.save(user=request.user)
+            return Response(order.data, status=status.HTTP_201_CREATED)
+        return Response(order.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # def delete(self, request, pk):
+    #     order = Order.objects.get(pk=pk)
+    #     order.status = 'c'
+    #     order.save()
+    #     return Response(status=status.HTTP_204_NO_CONTENT)

@@ -21,5 +21,8 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('product_image/<int:pk>/', views.ProductImageDetail.as_view(), name='product_image-detail'),
     path('product_image/', views.ProductImageCreate.as_view(), name='product_image-create'),
-    path('product/create/', views.ProductCreate.as_view(), name='product_create')
+    path('product/create/', views.ProductCreate.as_view(), name='product_create'),
+    path('product/reviews/', views.ProductReview.as_view(), name='product_reviews'),
+    path('orders/', views.OrderList.as_view(), name='orders'),
+    path('orders/', views.OrderList.as_view(), name='orders'),
 ]
