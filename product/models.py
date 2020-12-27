@@ -19,10 +19,6 @@ class Occassion(models.Model):
         return self.name
 
 
-# class ProductOccassion(models.Model):
-#     product_id = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
-#     occassion_id = models.ForeignKey(Occassion, on_delete=models.CASCADE, null=True)
-
 class RelationShip(models.Model):
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=200, blank=True, null=True)
@@ -34,9 +30,9 @@ class RelationShip(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=45)
     details = models.TextField(max_length=3000)
-    price = models.IntegerField()
-    age_from = models.IntegerField()
-    age_to = models.IntegerField()
+    price = models.FloatField()
+    age_from = models.PositiveIntegerField()
+    age_to = models.PositiveIntegerField()
     gender = models.CharField(
         null=True,
         max_length=50,
@@ -55,36 +51,24 @@ class Product(models.Model):
     pimage = models.ImageField(upload_to='static/products/images/')
 
     class Meta:
-        ordering = ('id', )
+        ordering = ('created_at',)
 
     def __str__(self):
         return self.name
 
 
 class ProductPicture(models.Model):
-    product = models.ForeignKey(Product,default =None , on_delete=models.CASCADE, blank=True)
-    image = models.ImageField(upload_to='static/products/images/', verbose_name='Image', null=True, blank=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='static/products/images/', verbose_name='Image')
 
     def __str__(self):
         return self.product.name
-
-
-class Test(models.Model):
-    name = models.CharField(max_length=10, blank=True)
-    product = models.ForeignKey('Product', on_delete=models.CASCADE, null=True)
 
 
 class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     body = models.CharField(max_length=1000)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-
-class Rate(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
     rate = models.CharField(
         null=True,
         max_length=50,
@@ -110,3 +94,21 @@ class ReviewReport(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     body = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+    status = models.CharField(max_length=2, choices=[
+        ('p', 'in processing'),
+        ('s', 'shipped'),
+        ('e', 'delivered'),
+        ('r', 'returned'),
+        ('c', 'cancelled'),
+    ], default='p')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ('-created_at',)

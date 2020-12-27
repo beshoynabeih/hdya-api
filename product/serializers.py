@@ -1,5 +1,6 @@
 from .models import *  # Product , Category , Occassion , RelationShip
-from rest_framework import serializers
+from rest_framework import serializers, status, validators
+from rest_framework.response import Response
 from django.utils import timezone
 
 
@@ -27,65 +28,58 @@ class ProductPictureSerializer(serializers.ModelSerializer):
         fields = ('id', 'image', 'product')
 
 
-class TestSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Test
-        fields = '__all__'
-
-
 class ProductSerializer(serializers.ModelSerializer):
-    # user_name = serializers.CharField(source="user_id.user.username", read_only=True)
     category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
-    occassions = serializers.PrimaryKeyRelatedField(many=True, queryset=Occassion.objects.all())
-    relationships = serializers.PrimaryKeyRelatedField(many=True, queryset=RelationShip.objects.all())
-    # productpicture_set = ProductPictureSerializer(many=True, required=False)
-    user = serializers.CharField(
-        default=serializers.CurrentUserDefault()
-    )
-    # test_set = TestSerializer(many=True)
+    occassions = serializers.PrimaryKeyRelatedField(many=True, queryset=Occassion.objects.all(), required=False)
+    relationships = serializers.PrimaryKeyRelatedField(many=True, queryset=RelationShip.objects.all(), required=False)
+    images = ProductPictureSerializer(many=True, required=False)
 
     class Meta:
         model = Product
-        fields = '__all__'
-        
-        # fields = ('id',
-        #           'user',
-        #           'category',
-        #           'occassions',
-        #           'relationships',
-        #           'name',
-        #           'details',
-        #           'price',
-        #           'age_from',
-        #           'age_to',
-        #           'gender',
-        #           'is_featured',
-        #           'created_at',
-        #         #   'productpicture_set',
-        #           )
-        read_only_fields = ('is_featured', 'user')
+        fields = ('id',
+                  'name',
+                  'details',
+                  'category',
+                  'price',
+                  'age_from',
+                  'age_to',
+                  'gender',
+                  'is_featured',
+                  'user',
+                  'occassions',
+                  'relationships',
+                  'images',
+                  'created_at',
+                  'updated_at',
+                  )
+        read_only_fields = ('is_featured', 'created_at', 'updated_at', 'user')
 
-    # def create(self, validated_data):
-    #     print(validated_data)
-    #     tests = validated_data.pop('productpicture_set')
-    #     product = super(ProductSerializer, self).create(validated_data)
-    #     for test in tests:
-    #         print(type(test))
-    #         # Test.objects.create(product=product, **test)
-    #         # ProductPicture.objects.create(product=product, image='')
-    #     return product
+    def validate(self, attrs):
+        if attrs['age_from'] > attrs['age_to']:
+            raise serializers.ValidationError('invalid valud for age to. It mus be greather than age from')
+        attrs['user'] = self.context['request'].user
+        return attrs
+
+    def create(self, validated_data):
+        print(validated_data)
+        product = super(ProductSerializer, self).create(validated_data)
+        # ProductPicture.objects.create(product=product, image=image)
+        return product
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Review
         fields = '__all__'
+        read_only_fields = ('user', 'created_at')
 
 
-class RateSerializer(serializers.ModelSerializer):
+class OrderSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Rate
+        model = Order
         fields = '__all__'
+        read_only_fields = ('user', 'created_at', 'updated_at')
 
 
 class ProductReportSerializer(serializers.ModelSerializer):
