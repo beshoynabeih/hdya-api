@@ -48,7 +48,6 @@ class UserProducts(views.APIView):
 
     def get(self, request):
         products = Product.objects.filter(user=request.user)
-        print(products)
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
