@@ -49,7 +49,6 @@ class Product(models.Model):
     is_featured = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    pimage = models.ImageField(upload_to='static/products/images/')
 
     class Meta:
         ordering = ('created_at',)

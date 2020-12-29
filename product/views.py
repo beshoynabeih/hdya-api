@@ -164,7 +164,7 @@ class OrderList(views.APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        order = Order.objects.filter(user=request.user).exclude(status='c')
+        order = Order.objects.filter(product__user=request.user).exclude(status='c')
         return Response(OrderSerializer(order, many=True).data)
 
     def post(self, request):
