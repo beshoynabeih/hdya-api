@@ -24,7 +24,7 @@ class User(AbstractUser):
                                   RegexValidator(regex=r'^01(0|1|2|5)[0-9]{8}$',
                                                  message='only egypt mobile number  0100000000 or +20100000000')
                               ])
-    avatar = models.ImageField(null=True, blank=True, upload_to='static/user/images/')
+    avatar = models.ImageField(null=True, blank=True, upload_to='user/')
     # governorate = models.CharField(max_length=30, null=True, blank=True)
     # city = models.CharField(max_length=30, null=True, blank=True)
     address = models.CharField(max_length=200, null=True, blank=True,

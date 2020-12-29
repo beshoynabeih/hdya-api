@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import viewsets, views, status
 from .serializers import *  # ProductSerializer, OccassionSerializer , ProductPictureSerializer
 from .models import *
-from .permissions import ProductOwner, ProductImageOwner, SubmitReview
+from .permissions import ProductOwner, ProductImageOwner, SubmitReview, OrderOwner
 from django_filters import rest_framework as filters
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
@@ -165,8 +165,16 @@ class OrderList(views.APIView):
             return Response(order.data, status=status.HTTP_201_CREATED)
         return Response(order.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # def delete(self, request, pk):
-    #     order = Order.objects.get(pk=pk)
-    #     order.status = 'c'
-    #     order.save()
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
+
+class OrderCancel(views.APIView):
+    permission_classes = [OrderOwner]
+
+    def delete(self, request, pk):
+        try:
+            order = Order.objects.get(pk=pk)
+        except:
+            raise Http404
+        self.check_object_permissions(request, order)
+        order.status = 'c'
+        order.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
