@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from authentication.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator 
 
 
 class Category(models.Model):
@@ -48,6 +49,7 @@ class Product(models.Model):
     is_featured = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    pimage = models.ImageField(upload_to='static/products/images/')
 
     class Meta:
         ordering = ('created_at',)
@@ -68,16 +70,17 @@ class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     body = models.CharField(max_length=1000)
-    rate = models.CharField(
-        null=True,
-        max_length=50,
-        choices=[
-            ('1', '1'),
-            ('2', '2'),
-            ('3', '3'),
-            ('4', '4'),
-            ('5', '5'),
-        ])
+    # rate = models.CharField(
+    #     null=True,
+    #     max_length=50,
+    #     choices=[
+    #         ('1', '1'),
+    #         ('2', '2'),
+    #         ('3', '3'),
+    #         ('4', '4'),
+    #         ('5', '5'),
+    #     ])
+    rate = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
     created_at = models.DateTimeField(auto_now_add=True)
 
 
