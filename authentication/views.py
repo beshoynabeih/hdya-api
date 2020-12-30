@@ -13,5 +13,9 @@ from .serializers import UserSerializer
 def password_reset_page(request):
     uid = request.GET['uid']
     token = request.GET['token']
-    return HttpResponse("hello " + uid + "<br>" + token)
+    context = {
+        'uid': uid,
+        'token': token
+    }
+    return render(request, 'reset_password.html', context)
 

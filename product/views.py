@@ -47,6 +47,15 @@ class ProductPictureViewSet(viewsets.ModelViewSet):
     serializer_class = ProductPictureSerializer
 
 
+class UserProducts(views.APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        products = Product.objects.filter(user=request.user)
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class OccassionViewSet(viewsets.ModelViewSet):
     queryset = Occassion.objects.all()
     serializer_class = OccassionSerializer
@@ -123,17 +132,17 @@ class ReviewReportViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewReportSerializer
 
 
-class ProductCreate(views.APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        if request.method == "POST":
-            self.check_permissions(request)
-            product = ProductSerializer(data=request.data)
-            if product.is_valid():
-                product.save()
-                return Response(product.data, status=status.HTTP_201_CREATED)
-            return Response(product.errors)
+# class ProductCreate(views.APIView):
+#     permission_classes = [IsAuthenticated]
+#
+#     def post(self, request):
+#         if request.method == "POST":
+#             self.check_permissions(request)
+#             product = ProductSerializer(data=request.data)
+#             if product.is_valid():
+#                 product.save()
+#                 return Response(product.data, status=status.HTTP_201_CREATED)
+#             return Response(product.errors)
 
 
 class ProductReview(views.APIView):
@@ -155,7 +164,7 @@ class OrderList(views.APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        order = Order.objects.filter(user=request.user).exclude(status='c')
+        order = Order.objects.filter(product__user=request.user).exclude(status='c')
         return Response(OrderSerializer(order, many=True).data)
 
     def post(self, request):
