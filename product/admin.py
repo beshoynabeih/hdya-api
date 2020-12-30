@@ -12,8 +12,15 @@ class ProductPictureAdmin(admin.ModelAdmin):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'user', 'price', 'gender')
+    list_display = ('id', 'name','age_from','age_to', 'category', 'user', 'price', 'gender', 'occassions_list', 'relationships_list')
     inlines = [ProductPictureinline]
+
+
+    def occassions_list(self, obj):
+        return ", ".join([f"{a.id}|{a.name}" for a in obj.occassions.all()])
+
+    def relationships_list(self, obj):
+        return ", ".join([f"{a.id}|{a.name}" for a in obj.relationships.all()])
 
 
 class ReviewAdmin(admin.ModelAdmin):
