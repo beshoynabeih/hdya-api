@@ -8,6 +8,8 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.http import Http404
+from rest_framework.pagination import LimitOffsetPagination
+from django.db.models import Q
 import os
 
 
@@ -36,7 +38,6 @@ class ProductViewSet(viewsets.ModelViewSet):
     filter_fields = __basic_fields
     search_fields = __basic_fields
     permission_classes = [ProductOwner]
-
 
     # def recentFiveProducts(queryset):
     # lastest_five = Product.objects.order_by('-created_at')[:5]
@@ -165,7 +166,7 @@ class OrderList(views.APIView):
 
     def get(self, request):
         order = Order.objects.filter(product__user=request.user).exclude(status='c')
-        return Response(OrderSerializer(order, many=True).data)
+        return Response(OrderSerializer(order, many=True).data, status=status.HTTP_200_OK)
 
     def post(self, request):
         order = OrderSerializer(data=request.data)
@@ -173,6 +174,16 @@ class OrderList(views.APIView):
             order.save(user=request.user)
             return Response(order.data, status=status.HTTP_201_CREATED)
         return Response(order.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class MyOrderList(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        orders = Order.objects.filter(user=request.user).exclude(status='c')
+        return Response(OrderSerializer(orders, many=True).data)
+
+
 
 
 class OrderCancel(views.APIView):
@@ -187,3 +198,57 @@ class OrderCancel(views.APIView):
         order.status = 'c'
         order.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ProductSearch(views.APIView, LimitOffsetPagination):
+
+    def relationship_query(self, relationships):
+        sub_query = Q(relationships__in=relationships[0])
+        for relation in relationships[1:]:
+            sub_query |= Q(relationships__in=relation)
+        return sub_query
+
+    def occassions_query(self, occassions):
+        sub_query = Q(occassions__in=[occassions[0]])
+        for occassion in occassions[1:]:
+            sub_query |= Q(occasions__in=[occassion])
+        return sub_query
+
+    def category_query(self, categories):
+        sub_query = Q(category=categories[0])
+        for category in categories:
+            sub_query |= Q(category=category)
+        return sub_query
+
+    def gender_query(self, gender):
+        sub_query = Q(gender=gender[0])
+        for g in gender:
+            sub_query |= Q(gender=g)
+        return sub_query
+
+    def get(self, request):
+        products = Product.objects.all()
+        if 'min_price' in request.GET:
+            products = products.filter(price__gte=request.GET.get('min_price'))
+        if 'max_price' in request.GET:
+            products = products.filter(price__lte=request.GET.get('max_price'))
+        if 'min_age' in request.GET:
+            products = products.filter(age_from__gte=request.GET.get('min_age'))
+        if 'max_age' in request.GET:
+            products = products.filter(age_to__lte=request.GET.get('max_age'))
+        if 'category' in request.GET:
+            products = products.filter(self.category_query(request.GET.getlist('category')))
+        if 'gender' in request.GET:
+            products = products.filter(self.gender_query(request.GET.getlist('gender')))
+        if 'relationships' in request.GET:
+            products = products.filter(self.relationship_query(request.GET.getlist('relationships')))
+        if 'occassions' in request.GET:
+            products = products.filter(occassions__in=request.GET.getlist('occassions')).distinct()
+        if 'relationships' in request.GET:
+            products = products.filter(relationships__in=request.GET.getlist('relationships')).distinct()
+        if 'featured' in request.GET:
+            products = products.filter(is_featured=request.GET.get('featured'))
+
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        # return self.get_paginated_response(serializer.data)

@@ -23,6 +23,8 @@ urlpatterns = [
     path('product_image/', views.ProductImageCreate.as_view(), name='product_image-create'),
     path('my/products/', views.UserProducts.as_view(), name='user_products'),
     path('product/reviews/', views.ProductReview.as_view(), name='product_reviews'),
+    path('product/search/', views.ProductSearch.as_view(), name='product_search'),
     path('orders/', views.OrderList.as_view(), name='orders'),
+    path('my/orders/', views.MyOrderList.as_view(), name='my_orders'),
     path('orders/<int:pk>/', views.OrderCancel.as_view(), name='orders'),
 ]
