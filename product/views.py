@@ -228,6 +228,8 @@ class ProductSearch(views.APIView, LimitOffsetPagination):
 
     def get(self, request):
         products = Product.objects.all()
+        if 'name' in request.GET:
+            products = products.filter(name__icontains=request.GET.get('name'))
         if 'min_price' in request.GET:
             products = products.filter(price__gte=request.GET.get('min_price'))
         if 'max_price' in request.GET:
