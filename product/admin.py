@@ -39,4 +39,6 @@ admin.site.register(Category)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Review, ReviewAdmin)
 admin.site.register(Order, OrderAdmin)
+admin.site.register(ReviewReport)
+admin.site.register(ProductReport)
 
