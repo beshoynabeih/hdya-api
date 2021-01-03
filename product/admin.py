@@ -12,9 +12,9 @@ class ProductPictureAdmin(admin.ModelAdmin):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name','age_from','age_to', 'category', 'user', 'price', 'gender', 'occassions_list', 'relationships_list')
+    list_display = (
+    'id', 'name', 'age_from', 'age_to', 'category', 'user', 'price', 'gender', 'occassions_list', 'relationships_list')
     inlines = [ProductPictureinline]
-
 
     def occassions_list(self, obj):
         return ", ".join([f"{a.id}|{a.name}" for a in obj.occassions.all()])
@@ -24,8 +24,8 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ('id', 'product', 'product_id', 'user', 'body')
-    list_display_links = ('id', 'product', 'product_id')
+    list_display = ('id', 'product', 'rate', 'user', 'body')
+    list_display_links = ('id', 'product')
 
 
 class OrderAdmin(admin.ModelAdmin):
@@ -39,4 +39,3 @@ admin.site.register(Category)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Review, ReviewAdmin)
 admin.site.register(Order, OrderAdmin)
-

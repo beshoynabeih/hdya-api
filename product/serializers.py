@@ -49,6 +49,8 @@ class ProductSerializer(serializers.ModelSerializer):
                   'occassions',
                   'relationships',
                   'images',
+                  'number_of_user_rated_product',
+                  'avg_rate',
                   'created_at',
                   'updated_at',
                   )

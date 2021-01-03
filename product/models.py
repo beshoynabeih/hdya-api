@@ -28,6 +28,23 @@ class RelationShip(models.Model):
         return self.name
 
 
+class Review(models.Model):
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    body = models.CharField(max_length=1000)
+    rate = models.IntegerField(
+        null=True,
+        choices=[
+            (1, '1'),
+            (2, '2'),
+            (3, '3'),
+            (4, '4'),
+            (5, '5'),
+        ])
+    # rate = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
 class Product(models.Model):
     name = models.CharField(max_length=45)
     details = models.TextField(max_length=3000)
@@ -56,6 +73,14 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def number_of_user_rated_product(self):
+        return Review.objects.filter(product=self).count()
+
+    @property
+    def avg_rate(self):
+        return Review.objects.filter(product=self).aggregate(models.Avg('rate'))['rate__avg'] or 0
+
 
 class ProductPicture(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
@@ -65,22 +90,7 @@ class ProductPicture(models.Model):
         return self.product.name
 
 
-class Review(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    body = models.CharField(max_length=1000)
-    # rate = models.CharField(
-    #     null=True,
-    #     max_length=50,
-    #     choices=[
-    #         ('1', '1'),
-    #         ('2', '2'),
-    #         ('3', '3'),
-    #         ('4', '4'),
-    #         ('5', '5'),
-    #     ])
-    rate = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
-    created_at = models.DateTimeField(auto_now_add=True)
+
 
 
 class ProductReport(models.Model):
